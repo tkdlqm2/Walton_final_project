@@ -4,6 +4,11 @@ const app = express();
 var bodyParser = require('body-parser');
 var RegisterUser = require('./registerUser');
 var adminKey = 'admin1';
+var mongoose = require('mongoose');
+// var User = require('./user');
+
+var UsersSchema;
+var UserModel;
 
 // Constants
 const PORT = 8080;
@@ -26,6 +31,58 @@ app.all('/*', function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     next();
 });
+
+
+
+// DB
+function connectDB() {
+    var databaseUrl = 'mongodb://127.0.0.1:27017/local';
+    mongoose.Promise = global.Promise; // 몽구스가 promise를 사용하기에 이렇게 설정을 해야함.
+    mongoose.connect(databaseUrl); // db 연결을 해주는 상황.
+    database = mongoose.connection;
+
+    database.on('open', function () {
+        console.log('db 연결됨. ' + databaseUrl);
+
+        UsersSchema = mongoose.Schema({
+            id: { type: String, required: true, unique: true },
+            password: { type: String, required: true, },
+            admin: { type: String, index: 'hashed' },
+            orgDepartment: { type: String, required: true },
+            orgMSP: { type: String, required: true },
+            network: { type: String, required: true },
+            created_at: { type: Date, index: { unique: false }, 'default': Date.now() },
+            updated_at: { type: Date, index: { unique: false }, 'defalut': Date.now() }
+        }); // 몽구스에 스키마라는 함수가 있음.
+
+        // 스키마라는 객체라 return이 된다.
+        console.log('UserSchema 정의함');
+
+        UsersSchema.static('findById', function (id, callback) {
+            return this.find({ id: id }, callback);
+        });
+
+        UsersSchema.static('findAll', function (callback) {
+            return this.find({}, callback);
+        });
+
+        // UsersSchema.static.findById = function (id, callback) {
+        //     return this.find({ id: id }, callback);
+        // } 이런식으로도 사용을 할 수 있음.
+
+
+        // param1 : users -> 기존의 커넥션을 users로 만들었던 것.
+        // param2 : userSchema -> 위에서 정의한 스키마와 실제 커넥션 스키마를 연결시켜주는것.
+        UserModel = mongoose.model('zxc', UsersSchema);
+        console.log('UserModel 정의함');
+    }); // db 연결시 호출되는것
+    database.on('disconnected', function () {
+        console.log('데이터베이스 연결 끊어짐');
+    });
+
+    database.on('error', console.error.bind(console, '몽구스 연결 에러'));
+}
+
 /////////////////////////////////////////////////////////////////////////////////////
 ////////////////////// 로그인
 /////////////////////////////////////////////////////////////////////////////////////
@@ -78,15 +135,31 @@ app.post('/api/join/', async function (req, res) {
             orgMSP = 'Org3MSP';
             network = 'connection3.json';
         } else {
-            console.log("-----<<  회원가입 >> --------");
+            console.log("-----<<  회원가입  >> --------");
             console.log("잘못된 정보입니다")
             console.log('---------------------------');
             return;
         }
 
-        var register = new RegisterUser(id, org, admin, orgDepartment, orgMSP, network, password);
-        register.setRegister();
-        return res.redirect('./index.html');
+        if (database) {
+            addUser(id, password, admin, orgDepartment, orgMSP, network, function (err, result) {
+                if (err) {
+                    console.log('에러발생');
+                    return;
+                }
+
+                if (result) {
+                    // console.dir(result);
+                    console.log('사용자 추가 성공!');
+                } else {
+                    console.log('에러 발생');
+                    console.log('사용자 추가 안됨');
+                }
+            });
+        } else {
+            console.log('에러 발생');
+            console.log('db 연결안됨');
+        }
 
     } catch (error) {
         console.error();
@@ -860,11 +933,32 @@ app.post('/api/sendGoods_packaging/', async function (req, res) {
     }
 
 });
+//
+
+
+// DB        orgDepartment,orgMSP,network
+
+
+var addUser = function (id, password, admin, orgDepartment, orgMSP, network, callback) {
+    console.log('addUser호출됨 : ');
+
+    var user = new UserModel({ "id": id, "password": password, "admin": admin, "orgDepartment": orgDepartment, "orgMSP": orgMSP, "network": network });
+    user.save(function (err) {
+        if (err) {
+            callback(err, null);
+            return;
+        }
+        console.log("사용자 데이터 추가함.");
+        callback(null, user);
+    }); // 저장시키는 것.
+};
 
 
 
 // server start
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
+connectDB();
+
 
 
