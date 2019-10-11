@@ -141,6 +141,9 @@ app.post('/api/join/', async function (req, res) {
             return;
         }
 
+        Register = new RegisterUser(id, org, admin, orgDepartment, orgMSP, network, password);
+        Register.setRegister();
+
         if (database) {
             addUser(id, password, admin, orgDepartment, orgMSP, network, function (err, result) {
                 if (err) {

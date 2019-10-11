@@ -4,10 +4,7 @@
 
 // 디비에 저장하는 거
 
-// var user = require('./user');
-//
-var mongoose = require('mongoose');
-//
+
 function Register(id, org, admin, orgDepartment, orgMSP, network, password) {
     this.id = id;
     this.org = org;
@@ -18,7 +15,7 @@ function Register(id, org, admin, orgDepartment, orgMSP, network, password) {
     this.password = password;
 }
 
-Register.prototype.setRegister = async function (user) {
+Register.prototype.setRegister = async function () {
     try {
 
         const { FileSystemWallet, Gateway, X509WalletMixin } = require('fabric-network');
