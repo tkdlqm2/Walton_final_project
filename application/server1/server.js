@@ -86,6 +86,7 @@ function connectDB() {
 /////////////////////////////////////////////////////////////////////////////////////
 ////////////////////// 로그인
 /////////////////////////////////////////////////////////////////////////////////////
+
 app.get('/api/login/', function (req, res) {
     fs.readFile('./master/login.html', function (error, data) {
         res.send(data.toString());
@@ -94,7 +95,45 @@ app.get('/api/login/', function (req, res) {
 });
 app.post('/api/login/', async function (req, res) {
 
+    var paramId = req.body.id || req.query.id;
+    var paramPassword = req.body.password || req.query.password;
+
+    if (database) {
+        authUser(paramId, paramPassword, function (err, docs) {
+            // param 1 : 에러 발생 시 받을 값.
+            // param 2 : 정상작동 시 받을 값.
+
+            if (err) {
+                console.log('에러발생');
+                res.writeHead(200, '{"Content-Type', "text/html,charset=utf8");
+                res.write('<h1>에러 발생</h1>');
+                res.end();
+                return;
+            }
+
+            if (docs) {
+                console.log("로그인성공");
+
+            } else {
+                console.log('에러발생');
+                res.writeHead(200, '{"Content-Type', "text/html,charset=utf8");
+                res.write('<h1>사용자 데이터 조회 안됨</h1>');
+                res.end();
+                return;
+            }
+        })
+    } else {
+        console.log('에러발생');
+        res.writeHead(200, '{"Content-Type', "text/html,charset=utf8");
+        res.write('<h1>DB 연결이 안됨.</h1>');
+        res.end();
+        return;
+    }
+
 });
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////
 ////////////////////// 회원가입
 /////////////////////////////////////////////////////////////////////////////////////
@@ -168,9 +207,11 @@ app.post('/api/join/', async function (req, res) {
         console.error();
     }
 });
+
 /////////////////////////////////////////////////////////////////////////////////////
 ////////////////////// 모든 원두 이력 조회
 /////////////////////////////////////////////////////////////////////////////////////
+
 app.get('/', function (req, res) {
     fs.readFile('./index.html', function (error, data) {
         res.send(data.toString());
@@ -956,6 +997,45 @@ var addUser = function (id, password, admin, orgDepartment, orgMSP, network, cal
     }); // 저장시키는 것.
 };
 
+var authUser = function (id, password, callback) {
+    console.log("id : " + id);
+    console.log("password : " + password);
+    console.log('authUser 호출됨', id + '/' + password);
+
+    UserModel.findById(id, function (err, results) {
+        if (err) {
+            callback(err, null);
+            return;
+        }
+        console.log('Id : ' + this.id);
+        if (results.length > 0) {
+            if (results[0]._doc.password === password) {
+                console.log('비밀번호 일치함');
+                callback(null, results);
+            } else {
+                console.log('비밀번호 일치하지 않음');
+                callback(null, null);
+            }
+        } else {
+            console.log('아이디를 찾을 수 없음');
+            callback(null, null);
+        }
+    });
+
+    UserModel.find({ "id": id, "password": password }, function (err, docs) {
+        if (err) {
+            callback(err, null);
+            return;
+        }
+        if (docs.length > 0) {
+            console.log('일치하는 사용자를 찾음.');
+            callback(null, docs);
+        } else {
+            console.log('일치하는 사용자를 찾지 못함');
+            callback(null, null);
+        }
+    });
+};
 
 
 // server start
