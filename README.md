@@ -13,4 +13,4 @@ Each organization has node servers, so there are only four express servers. This
 - second version <br>
 Version 2 complements the inefficient configuration in version 1 by reducing the express server from four to one.
 
-![version](./images/version.png)
+![version4](./images/version4.png)
