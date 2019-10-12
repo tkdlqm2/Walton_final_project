@@ -5,6 +5,8 @@ var bodyParser = require('body-parser');
 var RegisterUser = require('./registerUser');
 var adminKey = 'admin1';
 var mongoose = require('mongoose');
+var crypto = require('crypto');
+
 // var User = require('./user');
 
 var UsersSchema;
@@ -45,8 +47,8 @@ function connectDB() {
         console.log('db 연결됨. ' + databaseUrl);
 
         UsersSchema = mongoose.Schema({
-            id: { type: String, required: true, unique: true },
-            password: { type: String, required: true, },
+            id: { type: String, 'default': '' },
+            hashed_password: { type: String, required: true, 'deafult': ' ' },
             admin: { type: String, index: 'hashed' },
             orgDepartment: { type: String, required: true },
             orgMSP: { type: String, required: true },
@@ -57,6 +59,39 @@ function connectDB() {
 
         // 스키마라는 객체라 return이 된다.
         console.log('UserSchema 정의함');
+
+        UsersSchema
+            .virtual('password')
+            .set(function (password) {
+                this.salt = this.makeSalt();
+                this.hashed_password = this.encryptPassword(password);
+                console.log('virtual password 저장됨 : ' + this.hashed_password);
+            });
+
+        UsersSchema.method('encryptPassword', function (plainText, inSalt) {
+            if (inSalt) {
+                return crypto.createHmac('sha1', inSalt).update(plainText).digest(
+                    'hex');
+            } else {
+                return crypto.createHmac('sha1', this.salt).update(plainText).digest('hex');
+            }
+        });
+
+        UsersSchema.method('makeSalt', function () {
+            return Math.round((new Date().valueOf() * Math.random())) + '';
+        });
+
+        UsersSchema.method('authenticate', function (plainText, inSalt, hashed_password) {
+            if (inSalt) {
+                console.log('authenticate 호출됨 %s -> %s : %s', plainText,
+                    this.encryptPassword(plainText, inSalt), hashed_password);
+                return this.encryptPassword(plainText, inSalt) == hashed_password;
+            } else {
+                console.log('authenticate 호출됨 %s -> %s : %s', plainText,
+                    this.encryptPassword(plainText, inSalt), hashed_password);
+                return this.encryptPassword(plainText) == hashed_password;
+            }
+        });
 
         UsersSchema.static('findById', function (id, callback) {
             return this.find({ id: id }, callback);
@@ -73,7 +108,7 @@ function connectDB() {
 
         // param1 : users -> 기존의 커넥션을 users로 만들었던 것.
         // param2 : userSchema -> 위에서 정의한 스키마와 실제 커넥션 스키마를 연결시켜주는것.
-        UserModel = mongoose.model('zxc', UsersSchema);
+        UserModel = mongoose.model('hong', UsersSchema);
         console.log('UserModel 정의함');
     }); // db 연결시 호출되는것
     database.on('disconnected', function () {
@@ -180,8 +215,8 @@ app.post('/api/join/', async function (req, res) {
             return;
         }
 
-        Register = new RegisterUser(id, org, admin, orgDepartment, orgMSP, network, password);
-        Register.setRegister();
+        // Register = new RegisterUser(id, org, admin, orgDepartment, orgMSP, network, password);
+        // Register.setRegister();
 
         if (database) {
             addUser(id, password, admin, orgDepartment, orgMSP, network, function (err, result) {
@@ -313,11 +348,6 @@ app.get('/api/querykey/:id', async function (req, res) {
         res.status(400).json(`{response: ${error}`);
     }
 });
-
-
-
-
-
 
 
 // =================================================================================
@@ -980,7 +1010,7 @@ app.post('/api/sendGoods_packaging/', async function (req, res) {
 //
 
 
-// DB        orgDepartment,orgMSP,network
+// DB
 
 
 var addUser = function (id, password, admin, orgDepartment, orgMSP, network, callback) {
@@ -1009,7 +1039,13 @@ var authUser = function (id, password, callback) {
         }
         console.log('Id : ' + this.id);
         if (results.length > 0) {
-            if (results[0]._doc.password === password) {
+            var user = new UserModel({
+                id: id
+            });
+            var authenticated = user.authenticate(password, results[0]._doc.salt,
+                results[0]._doc.hashed_password);
+
+            if (authenticated) {
                 console.log('비밀번호 일치함');
                 callback(null, results);
             } else {
