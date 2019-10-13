@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- jQuery AJAX -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("button").click(function () {
+                $.get("../../api/query", function (data, status) {
+
+                    $("#div2").empty();
+
+                    for (var i = 0; i < data.length; i++) {
+                        $("#div2").append(JSON.stringify(data[i]) + "<br>");
+                    }
+
+                });
+            });
+        });
+    </script>
+    <title>Myproject Page</title>
+</head>
+
+<body>
+
+
+    <h3>로스팅업체 페이지</h3>
+    <p>메뉴</p>
+    <a href="./api/querykey">이력 관리</a>
+    <br>
+    <a href="./api/enrollArriveTime_roaster">상품 도착 날짜 등록</a>
+    <br>
+    <a href="./api/enrollGoods_roaster">로스팅 등록</a>
+    <br>
+    <a href="./api/sendGoods_roaster">상품 출고 날짜 등록</a>
+    <br>
+    <a href="#">마이 페이지</a>
+    <br>
+    <br>
+
+    <button>Query All Keys</button>
+
+    <div id="div1">
+        <h2>Sacc Query Result</h2>
+    </div>
+    <div id="div2"></div>
+    <br><br><br>
+    <a href="/">로그아웃</a>
+
+
+</body>
+
+</html>

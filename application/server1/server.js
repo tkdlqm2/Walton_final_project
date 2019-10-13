@@ -48,7 +48,7 @@ function connectDB() {
 
         UsersSchema = mongoose.Schema({
             id: { type: String, 'default': '' },
-            hashed_password: { type: String, required: true, 'deafult': ' ' },
+            password: { type: String, required: true, 'deafult': ' ' },
             admin: { type: String, index: 'hashed' },
             orgDepartment: { type: String, required: true },
             orgMSP: { type: String, required: true },
@@ -59,39 +59,6 @@ function connectDB() {
 
         // 스키마라는 객체라 return이 된다.
         console.log('UserSchema 정의함');
-
-        UsersSchema
-            .virtual('password')
-            .set(function (password) {
-                this.salt = this.makeSalt();
-                this.hashed_password = this.encryptPassword(password);
-                console.log('virtual password 저장됨 : ' + this.hashed_password);
-            });
-
-        UsersSchema.method('encryptPassword', function (plainText, inSalt) {
-            if (inSalt) {
-                return crypto.createHmac('sha1', inSalt).update(plainText).digest(
-                    'hex');
-            } else {
-                return crypto.createHmac('sha1', this.salt).update(plainText).digest('hex');
-            }
-        });
-
-        UsersSchema.method('makeSalt', function () {
-            return Math.round((new Date().valueOf() * Math.random())) + '';
-        });
-
-        UsersSchema.method('authenticate', function (plainText, inSalt, hashed_password) {
-            if (inSalt) {
-                console.log('authenticate 호출됨 %s -> %s : %s', plainText,
-                    this.encryptPassword(plainText, inSalt), hashed_password);
-                return this.encryptPassword(plainText, inSalt) == hashed_password;
-            } else {
-                console.log('authenticate 호출됨 %s -> %s : %s', plainText,
-                    this.encryptPassword(plainText, inSalt), hashed_password);
-                return this.encryptPassword(plainText) == hashed_password;
-            }
-        });
 
         UsersSchema.static('findById', function (id, callback) {
             return this.find({ id: id }, callback);
@@ -108,7 +75,7 @@ function connectDB() {
 
         // param1 : users -> 기존의 커넥션을 users로 만들었던 것.
         // param2 : userSchema -> 위에서 정의한 스키마와 실제 커넥션 스키마를 연결시켜주는것.
-        UserModel = mongoose.model('hong', UsersSchema);
+        UserModel = mongoose.model('power1', UsersSchema);
         console.log('UserModel 정의함');
     }); // db 연결시 호출되는것
     database.on('disconnected', function () {
@@ -117,6 +84,36 @@ function connectDB() {
 
     database.on('error', console.error.bind(console, '몽구스 연결 에러'));
 }
+
+
+// route 
+app.get('/importer_index', function (req, res) {
+    fs.readFile('./importer_index.html', function (error, data) {
+        res.send(data.toString());
+
+    });
+});
+
+app.get('/container_index', function (req, res) {
+    fs.readFile('./container_index.html', function (error, data) {
+        res.send(data.toString());
+
+    });
+});
+
+app.get('/roast_index', function (req, res) {
+    fs.readFile('./roast_index.html', function (error, data) {
+        res.send(data.toString());
+
+    });
+});
+
+app.get('/master_index', function (req, res) {
+    fs.readFile('./master_index.html', function (error, data) {
+        res.send(data.toString());
+
+    });
+});
 
 /////////////////////////////////////////////////////////////////////////////////////
 ////////////////////// 로그인
@@ -140,27 +137,44 @@ app.post('/api/login/', async function (req, res) {
 
             if (err) {
                 console.log('에러발생');
-                res.writeHead(200, '{"Content-Type', "text/html,charset=utf8");
-                res.write('<h1>에러 발생</h1>');
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.write('error \n');
+
                 res.end();
                 return;
             }
 
             if (docs) {
+                var whereAdmin = (docs[0].admin);
                 console.log("로그인성공");
+                if (whereAdmin == 'admin1') {
+                    console.log(docs[0].admin);
+                    res.redirect('/importer_index');
+
+                } else if (whereAdmin == 'admin2') {
+                    console.log(docs[0].admin);
+                    res.redirect('/container_index');
+
+                } else if (whereAdmin == 'admin3') {
+                    console.log(docs[0].admin);
+                    res.redirect('/roast_index');
+                } else if (whereAdmin == 'admin4') {
+                    console.log(docs[0].admin);
+                    res.redirect('/master_index');
+                }
 
             } else {
                 console.log('에러발생');
-                res.writeHead(200, '{"Content-Type', "text/html,charset=utf8");
-                res.write('<h1>사용자 데이터 조회 안됨</h1>');
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.write('error \n');
                 res.end();
                 return;
             }
         })
     } else {
         console.log('에러발생');
-        res.writeHead(200, '{"Content-Type', "text/html,charset=utf8");
-        res.write('<h1>DB 연결이 안됨.</h1>');
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.write('error \n');
         res.end();
         return;
     }
@@ -215,19 +229,28 @@ app.post('/api/join/', async function (req, res) {
             return;
         }
 
-        // Register = new RegisterUser(id, org, admin, orgDepartment, orgMSP, network, password);
-        // Register.setRegister();
+        Register = new RegisterUser(id, org, admin, orgDepartment, orgMSP, network, password);
+        Register.setRegister();
 
         if (database) {
             addUser(id, password, admin, orgDepartment, orgMSP, network, function (err, result) {
                 if (err) {
                     console.log('에러발생');
+                    console.log(err);
                     return;
                 }
 
                 if (result) {
                     // console.dir(result);
                     console.log('사용자 추가 성공!');
+                    var whereAdmin = result.admin;
+                    if (whereAdmin == 'admin1') {
+                        res.redirect('/importer_index');
+                    } else if (whereAdmin == 'admin2') {
+                        res.redirect('/container_index');
+                    } else if (whereAdmin == 'admin3') {
+                        res.redirect('/roast_index');
+                    }
                 } else {
                     console.log('에러 발생');
                     console.log('사용자 추가 안됨');
@@ -282,10 +305,6 @@ app.get('/api/query', async function (req, res) {
     // Get the contract from the network.
     const contract = network.getContract('sacc');
 
-
-    // Evaluate the specified transaction.
-    // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
-    // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
     const result = await contract.evaluateTransaction('getAllKeys');
     console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
 
@@ -301,8 +320,7 @@ app.get('/api/querykey/', function (req, res) {
     });
 });
 
-// Query car handle
-// localhost:8080/api/querycar?carno=CAR5
+
 app.get('/api/querykey/:id', async function (req, res) {
     // create the key value store as defined in the fabric-client/config/default.json 'key-value-store' setting
     try {
@@ -372,6 +390,7 @@ app.post('/api/enrollGoods_improter/', async function (req, res) {
         var value5 = req.body.value15.toString();
         var value6 = req.body.value16;
         var value7 = req.body.latitute.toString();
+        var obj;
 
         // Create a new file system based wallet for managing identities.
         const walletPath = path.join(process.cwd(), '..', 'wallet');
@@ -401,19 +420,20 @@ app.post('/api/enrollGoods_improter/', async function (req, res) {
                 return;
             }
 
-            console.log("------유통업체 ( 원두 이력 등록 ) ---------")
+            console.log("------유통업체 ( 원두 이력 등록 ) ---------");
             console.log("날짜 등록 : ", value1)
             console.log(`Block Number: ${blockNumber} \nTransaction ID: ${transactionId} \nStatus: ${status}`);
 
-            console.log("------------------------------------")
+            console.log("------------------------------------");
+
+
         })
         await contract.submitTransaction('enroll_seedByImporter', key, value1, value2, value3, value4, value5, value6, value7);
         console.log('정보 등록에 성공 했습니다.');
 
         // Disconnect from the gateway.
         await gateway.disconnect();
-
-        res.status(200).json({ response: 'Transaction has been submitted' });
+        res.redirect('/importer_index');
 
     } catch (error) {
         console.error(`Failed to submit transaction: ${error}`);
@@ -429,7 +449,7 @@ app.get('/api/sendGoods_importer', function (req, res) {
         res.send(data.toString());
     });
 });
-// Create car handle
+
 app.post('/api/sendGoods_importer/', async function (req, res) {
     try {
         var key = req.body.key;
@@ -477,7 +497,7 @@ app.post('/api/sendGoods_importer/', async function (req, res) {
         // Disconnect from the gateway.
         await gateway.disconnect();
 
-        res.status(200).json({ response: 'Transaction has been submitted' });
+        res.redirect('/importer_index');
 
     } catch (error) {
         console.error(`Failed to submit transaction: ${error}`);
@@ -543,7 +563,7 @@ app.post('/api/enrollGoods_container/', async function (req, res) {
         // Disconnect from the gateway.
         await gateway.disconnect();
 
-        res.status(200).json({ response: 'Transaction has been submitted' });
+        res.redirect('/container_index');
 
     } catch (error) {
         console.error(`Failed to submit transaction: ${error}`);
@@ -605,7 +625,7 @@ app.post('/api/sendGoods_container/', async function (req, res) {
         // Disconnect from the gateway.
         await gateway.disconnect();
 
-        res.status(200).json({ response: 'Transaction has been submitted' });
+        res.redirect('/container_index');
 
     } catch (error) {
         console.error(`Failed to submit transaction: ${error}`);
@@ -685,7 +705,7 @@ app.post('/api/enrollGoods_roaster/', async function (req, res) {
         // Disconnect from the gateway.
         await gateway.disconnect();
 
-        res.status(200).json({ response: 'Transaction has been submitted' });
+        res.redirect('/roast_index');
 
     } catch (error) {
         console.error(`Failed to submit transaction: ${error}`);
@@ -746,7 +766,7 @@ app.post('/api/enrollArriveTime_roaster/', async function (req, res) {
         // Disconnect from the gateway.
         await gateway.disconnect();
 
-        res.status(200).json({ response: 'Transaction has been submitted' });
+        res.redirect('/roast_index');
 
     } catch (error) {
         console.error(`Failed to submit transaction: ${error}`);
@@ -811,7 +831,7 @@ app.post('/api/sendGoods_roaster/', async function (req, res) {
         // Disconnect from the gateway.
         await gateway.disconnect();
 
-        res.status(200).json({ response: 'Transaction has been submitted' });
+        res.redirect('/roast_index');
 
     } catch (error) {
         console.error(`Failed to submit transaction: ${error}`);
@@ -1028,24 +1048,18 @@ var addUser = function (id, password, admin, orgDepartment, orgMSP, network, cal
 };
 
 var authUser = function (id, password, callback) {
-    console.log("id : " + id);
-    console.log("password : " + password);
-    console.log('authUser 호출됨', id + '/' + password);
+    console.log('authUser 호출');
 
     UserModel.findById(id, function (err, results) {
         if (err) {
             callback(err, null);
             return;
         }
-        console.log('Id : ' + this.id);
-        if (results.length > 0) {
-            var user = new UserModel({
-                id: id
-            });
-            var authenticated = user.authenticate(password, results[0]._doc.salt,
-                results[0]._doc.hashed_password);
+        console.log('아이디[%s]로 사용자 검색 결과 ', id);
 
-            if (authenticated) {
+        if (results.length > 0) {
+            console.log('아이디 [%s], 비밀번호 [%s]가 일치하는 사용자 찾음.');
+            if (results[0]._doc.password == password) {
                 console.log('비밀번호 일치함');
                 callback(null, results);
             } else {
@@ -1053,23 +1067,10 @@ var authUser = function (id, password, callback) {
                 callback(null, null);
             }
         } else {
-            console.log('아이디를 찾을 수 없음');
+            console.log('아이디와 일치하는 사용자를 찾지 못함');
             callback(null, null);
         }
-    });
 
-    UserModel.find({ "id": id, "password": password }, function (err, docs) {
-        if (err) {
-            callback(err, null);
-            return;
-        }
-        if (docs.length > 0) {
-            console.log('일치하는 사용자를 찾음.');
-            callback(null, docs);
-        } else {
-            console.log('일치하는 사용자를 찾지 못함');
-            callback(null, null);
-        }
     });
 };
 
