@@ -44,7 +44,7 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -52,15 +52,20 @@
             });
             socket.on("importer_enroll_seed2", function (data) {
 
+                console.log("=================");
+                console.log(data);
+                console.log("=================");
+
                 domain = JSON.parse(sessionStorage.getItem("domain"));
 
                 if (domain == null) {
+                    console.log(domain);
                     domain = [data];
                 } else {
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -76,7 +81,7 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -92,7 +97,7 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -108,7 +113,7 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -124,7 +129,7 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -140,7 +145,7 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -156,7 +161,7 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -173,7 +178,7 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -190,7 +195,7 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -200,13 +205,14 @@
             domain = JSON.parse(sessionStorage.getItem("domain"));
 
             for (var i = 0; i < domain.length; i++) {
-                $("#chatLogs").append("value : " + domain[i].value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + domain[i].from + "   " + domain[i].job + "-------------------" + "</strong></div><br>")
                     .append("BlockNumber : " + domain[i].blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + domain[i].transactionId + "</strong></div><br>")
                     .append("status : " + domain[i].status + "</strong></div><br><br>");
             }
         });
     </script>
+
 </body>
 
 </html>

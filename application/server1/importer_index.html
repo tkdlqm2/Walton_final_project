@@ -3,23 +3,6 @@
 
 <head>
     <!-- jQuery AJAX -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            $("button").click(function () {
-                $.get("../../api/query", function (data, status) {
-
-                    $("#div2").empty();
-
-                    for (var i = 0; i < data.length; i++) {
-                        $("#div2").append(JSON.stringify(data[i]) + "<br>");
-                    }
-
-                });
-            });
-        });
-    </script>
     <title>수입 업자 페이지</title>
 </head>
 
@@ -36,7 +19,7 @@
     <a href="./api/sendGoods_importer">상품 출고</a>
     <br>
     <br>
-    <a href="./api/showAllGoods">원두 이력 확인</a>
+    <a href="./api/queryAllGoods">원두 이력 확인</a>
     <br>
     <a href="#">마이 페이지</a>
     <br>
@@ -44,12 +27,9 @@
 
     <button>Query All Keys</button>
 
-    <div id="div1">
-        <h2>Sacc Query Result</h2>
-    </div>
-    <div id="div2"></div>
     <br><br><br>
     <a href="/">로그아웃</a>
+
     <div>
         <div id="chatLogs"></div>
     </div>
@@ -72,18 +52,14 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
+                    .append("원두 ID : " + data.key + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
 
             });
             socket.on("importer_enroll_seed2", function (data) {
-
-                console.log("=================");
-                console.log(data);
-                console.log("=================");
-
                 domain = JSON.parse(sessionStorage.getItem("domain"));
 
                 if (domain == null) {
@@ -93,7 +69,8 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
+                    .append("원두ID : " + data.key + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -109,7 +86,8 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
+                    .append("원두ID : " + data.key + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -125,7 +103,8 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
+                    .append("원두ID : " + data.key + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -141,7 +120,8 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
+                    .append("원두ID : " + data.key + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -157,7 +137,8 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
+                    .append("원두ID : " + data.key + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -173,7 +154,8 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
+                    .append("원두ID : " + data.key + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -189,7 +171,8 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
+                    .append("원두ID : " + data.key + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -206,7 +189,8 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
+                    .append("원두ID : " + data.key + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -223,7 +207,8 @@
                     domain.push(data);
                 }
                 sessionStorage.setItem("domain", JSON.stringify(domain));
-                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + data.from + "   " + data.job + "-------------------" + "</strong></div><br>")
+                    .append("원두ID : " + data.key + "</strong></div><br>")
                     .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
                     .append("status : " + data.status + "</strong></div><br><br>");
@@ -233,13 +218,15 @@
             domain = JSON.parse(sessionStorage.getItem("domain"));
 
             for (var i = 0; i < domain.length; i++) {
-                $("#chatLogs").append("value : " + domain[i].value1 + "</strong></div><br>")
+                $("#chatLogs").append("-------------------" + domain[i].from + "   " + domain[i].job + "-------------------" + "</strong></div><br>")
+                    .append("원두ID : " + domain[i].key + "</strong></div><br>")
                     .append("BlockNumber : " + domain[i].blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + domain[i].transactionId + "</strong></div><br>")
                     .append("status : " + domain[i].status + "</strong></div><br><br>");
             }
         });
     </script>
+
 
 
 </body>

@@ -95,6 +95,12 @@ function connectDB() {
     database.on('error', console.error.bind(console, '몽구스 연결 에러'));
 }
 
+app.get('/', function (req, res) {
+    fs.readFile('./index.html', function (error, data) {
+        res.send(data.toString());
+
+    });
+});
 
 // route 
 app.get('/importer_index', function (req, res) {
@@ -280,15 +286,15 @@ app.post('/api/join/', async function (req, res) {
 ////////////////////// 모든 원두 이력 조회
 /////////////////////////////////////////////////////////////////////////////////////
 
-app.get('/', function (req, res) {
-    fs.readFile('./index.html', function (error, data) {
+app.get('//api/queryAllGoods', function (req, res) {
+    fs.readFile('./queryAllGoods.html', function (error, data) {
         res.send(data.toString());
 
     });
 });
 
 
-app.get('/api/query', async function (req, res) {
+app.get('/api/queryAllGoods', async function (req, res) {
     // create the key value store as defined in the fabric-client/config/default.json 'key-value-store' setting
 
     // Create a new file system based wallet for managing identities.
@@ -437,7 +443,8 @@ app.post('/api/enrollGoods_improter/', async function (req, res) {
             console.log("------------------------------------");
             var from = "유통업체";
             var job = "원두이력 등록";
-            var sendData = { from, job, value1, blockNumber, transactionId, status };
+            console.log("key : " + key);
+            var sendData = { key, from, job, value1, blockNumber, transactionId, status };
             io.emit('importer_enroll_seed1', sendData);
         });
         await contract.submitTransaction('enroll_seedByImporter', key, value1, value2, value3, value4, value5, value6, value7);
@@ -503,7 +510,7 @@ app.post('/api/sendGoods_importer/', async function (req, res) {
             console.log("-------------------------------------------")
             var from = "유통업체";
             var job = "출고날짜 등록";
-            var sendData1 = { from, job, value17, blockNumber, transactionId, status };
+            var sendData1 = { key, from, job, value17, blockNumber, transactionId, status };
             io.emit('importer_enroll_seed2', sendData1);
 
         });
@@ -576,7 +583,7 @@ app.post('/api/enrollGoods_container/', async function (req, res) {
             console.log("-------------------------------")
             var from = "창고관리";
             var job = "원두이력 등록";
-            sendData = { from, job, value19, blockNumber, transactionId, status };
+            sendData = { key, from, job, value19, blockNumber, transactionId, status };
             io.emit('container_enroll_seed2', sendData);
         })
         await contract.submitTransaction('enroll_seedByContainer', key, value19, value20, value21);
@@ -642,7 +649,7 @@ app.post('/api/sendGoods_container/', async function (req, res) {
             console.log("-------------------------------")
             var from = "창고관리";
             var job = "출고날짜 등록";
-            sendData = { from, job, value22, blockNumber, transactionId, status };
+            sendData = { key, from, job, value22, blockNumber, transactionId, status };
             io.emit('container_enroll_seed2', sendData);
         })
         await contract.submitTransaction('set_timeByContainer', key, value22, destination2);
@@ -721,7 +728,7 @@ app.post('/api/enrollGoods_roaster/', async function (req, res) {
             console.log("-----------------------------------")
             var from = "로스팅업체";
             var job = "로스팅정보 등록";
-            sendData = { from, job, value28, blockNumber, transactionId, status };
+            sendData = { key, from, job, value28, blockNumber, transactionId, status };
             io.emit('Roast_enroll_seed1', sendData);
         })
 
@@ -789,7 +796,7 @@ app.post('/api/enrollArriveTime_roaster/', async function (req, res) {
             console.log("---------------------------------------")
             var from = "로스팅업체";
             var job = "도착날짜 등록";
-            sendData = { from, job, value24, blockNumber, transactionId, status };
+            sendData = { key, from, job, value24, blockNumber, transactionId, status };
             io.emit('Roast_enroll_seed2', sendData);
         })
 
@@ -855,7 +862,7 @@ app.post('/api/sendGoods_roaster/', async function (req, res) {
             console.log("---------------------------------")
             var from = "로스팅업체";
             var job = "상품출고 등록";
-            sendData = { from, job, value38, blockNumber, transactionId, status };
+            sendData = { key, from, job, value38, blockNumber, transactionId, status };
             io.emit('Roast_enroll_seed3', sendData);
         })
 
@@ -930,7 +937,7 @@ app.post('/api/enrollArriveTime_packaging/', async function (req, res) {
             console.log("------------------------------")
             var from = "패키징업체";
             var job = "상품도착 날짜 등록";
-            sendData = { from, job, value40, blockNumber, transactionId, status };
+            sendData = { key, from, job, value40, blockNumber, transactionId, status };
             io.emit('Package_enroll_seed1', sendData);
         })
         await contract.submitTransaction('setarr_timeByService', key, value40);
@@ -996,7 +1003,7 @@ app.post('/api/enrollGoods_packaging/', async function (req, res) {
             console.log("----------------------------")
             var from = "패키징업체";
             var job = "패키징 시간 등록";
-            sendData = { from, job, value42, blockNumber, transactionId, status };
+            sendData = { key, from, job, value42, blockNumber, transactionId, status };
             io.emit('Package_enroll_seed2', sendData);
         })
         await contract.submitTransaction('set_timeByService', key, value42);
@@ -1060,7 +1067,7 @@ app.post('/api/sendGoods_packaging/', async function (req, res) {
             console.log("--------------------------------")
             var from = "패키징업체";
             var job = "패키징 출고 시간 등록";
-            sendData = { from, job, value, blockNumber, transactionId, status };
+            sendData = { key, from, job, value, blockNumber, transactionId, status };
             io.emit('Package_enroll_seed3', sendData);
         })
         await contract.submitTransaction('set_timeByService2', key, value44);
