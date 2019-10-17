@@ -6,6 +6,7 @@
 </head>
 
 <body>
+
     <h1>유통업체</h1>
     <hr />
     <form method="post">
@@ -49,7 +50,191 @@
 
     <br><br>
     <a href="/">로그아웃</a>
+    <div>
+        <div id="chatLogs"></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        $(function () {
+            // socket.io 서버에 접속한다
+            var socket = io();
+            var domain = new Array();
 
+            // 서버로부터의 메시지가 수신되면
+            socket.on("importer_enroll_seed1", function (data) {
+
+                domain = JSON.parse(sessionStorage.getItem("domain"));
+
+                if (domain == null) {
+                    domain = [data];
+                } else {
+                    domain.push(data);
+                }
+                sessionStorage.setItem("domain", JSON.stringify(domain));
+                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                    .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
+                    .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
+                    .append("status : " + data.status + "</strong></div><br><br>");
+
+            });
+            socket.on("importer_enroll_seed2", function (data) {
+
+                domain = JSON.parse(sessionStorage.getItem("domain"));
+
+                if (domain == null) {
+                    domain = [data];
+                } else {
+                    domain.push(data);
+                }
+                sessionStorage.setItem("domain", JSON.stringify(domain));
+                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                    .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
+                    .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
+                    .append("status : " + data.status + "</strong></div><br><br>");
+
+            });
+            socket.on("container_enroll_seed1", function (data) {
+
+                domain = JSON.parse(sessionStorage.getItem("domain"));
+
+                if (domain == null) {
+                    domain = [data];
+                } else {
+                    domain.push(data);
+                }
+                sessionStorage.setItem("domain", JSON.stringify(domain));
+                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                    .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
+                    .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
+                    .append("status : " + data.status + "</strong></div><br><br>");
+
+            });
+            socket.on("container_enroll_seed2", function (data) {
+
+                domain = JSON.parse(sessionStorage.getItem("domain"));
+
+                if (domain == null) {
+                    domain = [data];
+                } else {
+                    domain.push(data);
+                }
+                sessionStorage.setItem("domain", JSON.stringify(domain));
+                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                    .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
+                    .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
+                    .append("status : " + data.status + "</strong></div><br><br>");
+
+            });
+            socket.on("Roast_enroll_seed1", function (data) {
+
+                domain = JSON.parse(sessionStorage.getItem("domain"));
+
+                if (domain == null) {
+                    domain = [data];
+                } else {
+                    domain.push(data);
+                }
+                sessionStorage.setItem("domain", JSON.stringify(domain));
+                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                    .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
+                    .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
+                    .append("status : " + data.status + "</strong></div><br><br>");
+
+            });
+            socket.on("Roast_enroll_seed2", function (data) {
+
+                domain = JSON.parse(sessionStorage.getItem("domain"));
+
+                if (domain == null) {
+                    domain = [data];
+                } else {
+                    domain.push(data);
+                }
+                sessionStorage.setItem("domain", JSON.stringify(domain));
+                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                    .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
+                    .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
+                    .append("status : " + data.status + "</strong></div><br><br>");
+
+            });
+            socket.on("Roast_enroll_seed3", function (data) {
+
+                domain = JSON.parse(sessionStorage.getItem("domain"));
+
+                if (domain == null) {
+                    domain = [data];
+                } else {
+                    domain.push(data);
+                }
+                sessionStorage.setItem("domain", JSON.stringify(domain));
+                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                    .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
+                    .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
+                    .append("status : " + data.status + "</strong></div><br><br>");
+
+            });
+            socket.on("Package_enroll_seed1", function (data) {
+
+                domain = JSON.parse(sessionStorage.getItem("domain"));
+
+                if (domain == null) {
+                    domain = [data];
+                } else {
+                    domain.push(data);
+                }
+                sessionStorage.setItem("domain", JSON.stringify(domain));
+                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                    .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
+                    .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
+                    .append("status : " + data.status + "</strong></div><br><br>");
+
+            });
+
+            socket.on("Package_enroll_seed2", function (data) {
+
+                domain = JSON.parse(sessionStorage.getItem("domain"));
+
+                if (domain == null) {
+                    domain = [data];
+                } else {
+                    domain.push(data);
+                }
+                sessionStorage.setItem("domain", JSON.stringify(domain));
+                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                    .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
+                    .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
+                    .append("status : " + data.status + "</strong></div><br><br>");
+
+            });
+
+            socket.on("Package_enroll_seed3", function (data) {
+
+                domain = JSON.parse(sessionStorage.getItem("domain"));
+
+                if (domain == null) {
+                    domain = [data];
+                } else {
+                    domain.push(data);
+                }
+                sessionStorage.setItem("domain", JSON.stringify(domain));
+                $("#chatLogs").append("value : " + data.value1 + "</strong></div><br>")
+                    .append("BlockNumber : " + data.blockNumber + "</strong></div><br>")
+                    .append("TransaciontID : " + data.transactionId + "</strong></div><br>")
+                    .append("status : " + data.status + "</strong></div><br><br>");
+
+            });
+
+            domain = JSON.parse(sessionStorage.getItem("domain"));
+
+            for (var i = 0; i < domain.length; i++) {
+                $("#chatLogs").append("value : " + domain[i].value1 + "</strong></div><br>")
+                    .append("BlockNumber : " + domain[i].blockNumber + "</strong></div><br>")
+                    .append("TransaciontID : " + domain[i].transactionId + "</strong></div><br>")
+                    .append("status : " + domain[i].status + "</strong></div><br><br>");
+            }
+        });
+    </script>
 </body>
 
 </html>

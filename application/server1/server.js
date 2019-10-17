@@ -1,11 +1,14 @@
 // ExpressJS Setup
 const express = require('express');
 const app = express();
+var server = require('http').createServer(app);
+
 var bodyParser = require('body-parser');
 var RegisterUser = require('./registerUser');
 var adminKey = 'admin1';
 var mongoose = require('mongoose');
 var crypto = require('crypto');
+var io = require('socket.io')(server);
 
 // var User = require('./user');
 
@@ -34,6 +37,13 @@ app.all('/*', function (req, res, next) {
     next();
 });
 
+
+
+// socket IO
+io.on('connection', function (socket) {
+    console.log('Socket Connected')
+    io.emit('connect', 'connected')
+})
 
 
 // DB
@@ -311,6 +321,7 @@ app.get('/api/query', async function (req, res) {
     var obj = JSON.parse(result);
     res.status(200).json(obj);
 });
+
 /////////////////////////////////////////////////////////////////////////////////////
 ////////////////////       원두 이력 조회
 /////////////////////////////////////////////////////////////////////////////////////
@@ -381,6 +392,7 @@ app.get('/api/enrollGoods_improter', function (req, res) {
 });
 
 app.post('/api/enrollGoods_improter/', async function (req, res) {
+
     try {
         var key = req.body.key;
         var value1 = req.body.value11;
@@ -390,7 +402,6 @@ app.post('/api/enrollGoods_improter/', async function (req, res) {
         var value5 = req.body.value15.toString();
         var value6 = req.body.value16;
         var value7 = req.body.latitute.toString();
-        var obj;
 
         // Create a new file system based wallet for managing identities.
         const walletPath = path.join(process.cwd(), '..', 'wallet');
@@ -423,11 +434,12 @@ app.post('/api/enrollGoods_improter/', async function (req, res) {
             console.log("------유통업체 ( 원두 이력 등록 ) ---------");
             console.log("날짜 등록 : ", value1)
             console.log(`Block Number: ${blockNumber} \nTransaction ID: ${transactionId} \nStatus: ${status}`);
-
             console.log("------------------------------------");
-
-
-        })
+            var from = "유통업체";
+            var job = "원두이력 등록";
+            var sendData = { from, job, value1, blockNumber, transactionId, status };
+            io.emit('importer_enroll_seed1', sendData);
+        });
         await contract.submitTransaction('enroll_seedByImporter', key, value1, value2, value3, value4, value5, value6, value7);
         console.log('정보 등록에 성공 했습니다.');
 
@@ -452,6 +464,7 @@ app.get('/api/sendGoods_importer', function (req, res) {
 
 app.post('/api/sendGoods_importer/', async function (req, res) {
     try {
+
         var key = req.body.key;
         var value17 = req.body.value17;
         var destination1 = req.body.destination1;
@@ -482,13 +495,18 @@ app.post('/api/sendGoods_importer/', async function (req, res) {
                 console.error(err);
                 return;
             }
+
             console.log("----------유통업체 (출고 날짜 등록)---------------")
             console.log("날짜 등록 : ", value17)
             console.log("배송지 : ", destination1)
             console.log(`Block Number: ${blockNumber}\n Transaction ID: ${transactionId} \nStatus: ${status}`);
             console.log("-------------------------------------------")
+            var from = "유통업체";
+            var job = "출고날짜 등록";
+            var sendData1 = { from, job, value17, blockNumber, transactionId, status };
+            io.emit('importer_enroll_seed2', sendData1);
 
-        })
+        });
 
         //
         await contract.submitTransaction('set_timeByImporter', key, value17, destination1);
@@ -556,6 +574,10 @@ app.post('/api/enrollGoods_container/', async function (req, res) {
             console.log("----     원두이력 등록        ----")
             console.log(`Block Number: ${blockNumber}\n Transaction ID: ${transactionId}\n Status: ${status}`);
             console.log("-------------------------------")
+            var from = "창고관리";
+            var job = "원두이력 등록";
+            sendData = { from, job, value19, blockNumber, transactionId, status };
+            io.emit('container_enroll_seed2', sendData);
         })
         await contract.submitTransaction('enroll_seedByContainer', key, value19, value20, value21);
         console.log('정보 등록에 성공 했습니다.');
@@ -618,6 +640,10 @@ app.post('/api/sendGoods_container/', async function (req, res) {
             console.log("----     출고날짜 등록      ----")
             console.log(`Block Number: ${blockNumber}\n Transaction ID: ${transactionId}\n Status: ${status}`);
             console.log("-------------------------------")
+            var from = "창고관리";
+            var job = "출고날짜 등록";
+            sendData = { from, job, value22, blockNumber, transactionId, status };
+            io.emit('container_enroll_seed2', sendData);
         })
         await contract.submitTransaction('set_timeByContainer', key, value22, destination2);
         console.log('정보 등록에 성공 했습니다.');
@@ -693,6 +719,10 @@ app.post('/api/enrollGoods_roaster/', async function (req, res) {
             console.log("-             로스팅 등록             -")
             console.log(`Block Number: ${blockNumber}\n Transaction ID: ${transactionId}\n Status: ${status}`);
             console.log("-----------------------------------")
+            var from = "로스팅업체";
+            var job = "로스팅정보 등록";
+            sendData = { from, job, value28, blockNumber, transactionId, status };
+            io.emit('Roast_enroll_seed1', sendData);
         })
 
         // Submit the specified transaction.
@@ -757,6 +787,10 @@ app.post('/api/enrollArriveTime_roaster/', async function (req, res) {
             console.log("-             도착날짜 등록               -")
             console.log(`Block Number: ${blockNumber}\n Transaction ID: ${transactionId}\n Status: ${status}`);
             console.log("---------------------------------------")
+            var from = "로스팅업체";
+            var job = "도착날짜 등록";
+            sendData = { from, job, value24, blockNumber, transactionId, status };
+            io.emit('Roast_enroll_seed2', sendData);
         })
 
         //
@@ -819,6 +853,10 @@ app.post('/api/sendGoods_roaster/', async function (req, res) {
             console.log("-         상품출고 등록           -")
             console.log(`Block Number: ${blockNumber}\n Transaction ID: ${transactionId}\n Status: ${status}`);
             console.log("---------------------------------")
+            var from = "로스팅업체";
+            var job = "상품출고 등록";
+            sendData = { from, job, value38, blockNumber, transactionId, status };
+            io.emit('Roast_enroll_seed3', sendData);
         })
 
         // Submit the specified transaction.
@@ -890,6 +928,10 @@ app.post('/api/enrollArriveTime_packaging/', async function (req, res) {
             console.log("-      상품도착날짜 등록      -")
             console.log(`Block Number: ${blockNumber}\n Transaction ID: ${transactionId}\n Status: ${status}`);
             console.log("------------------------------")
+            var from = "패키징업체";
+            var job = "상품도착 날짜 등록";
+            sendData = { from, job, value40, blockNumber, transactionId, status };
+            io.emit('Package_enroll_seed1', sendData);
         })
         await contract.submitTransaction('setarr_timeByService', key, value40);
         console.log('정보 등록에 성공 했습니다.');
@@ -897,7 +939,7 @@ app.post('/api/enrollArriveTime_packaging/', async function (req, res) {
         // Disconnect from the gateway.
         await gateway.disconnect();
 
-        res.status(200).json({ response: 'Transaction has been submitted' });
+        res.redirect('/master_index');
 
     } catch (error) {
         console.error(`Failed to submit transaction: ${error}`);
@@ -952,6 +994,10 @@ app.post('/api/enrollGoods_packaging/', async function (req, res) {
             console.log("-      패키징 시간 등록        -")
             console.log(`Block Number: ${blockNumber}\n Transaction ID: ${transactionId}\n Status: ${status}`);
             console.log("----------------------------")
+            var from = "패키징업체";
+            var job = "패키징 시간 등록";
+            sendData = { from, job, value42, blockNumber, transactionId, status };
+            io.emit('Package_enroll_seed2', sendData);
         })
         await contract.submitTransaction('set_timeByService', key, value42);
         console.log('정보 등록에 성공 했습니다.');
@@ -959,7 +1005,7 @@ app.post('/api/enrollGoods_packaging/', async function (req, res) {
         // Disconnect from the gateway.
         await gateway.disconnect();
 
-        res.status(200).json({ response: 'Transaction has been submitted' });
+        res.redirect('/master_index');
 
     } catch (error) {
         console.error(`Failed to submit transaction: ${error}`);
@@ -1012,6 +1058,10 @@ app.post('/api/sendGoods_packaging/', async function (req, res) {
             console.log("-        패키징 출고시간 등록          -")
             console.log(`Block Number: ${blockNumber}\n Transaction ID: ${transactionId}\n Status: ${status}`);
             console.log("--------------------------------")
+            var from = "패키징업체";
+            var job = "패키징 출고 시간 등록";
+            sendData = { from, job, value, blockNumber, transactionId, status };
+            io.emit('Package_enroll_seed3', sendData);
         })
         await contract.submitTransaction('set_timeByService2', key, value44);
         console.log('정보 등록에 성공 했습니다.');
@@ -1019,7 +1069,7 @@ app.post('/api/sendGoods_packaging/', async function (req, res) {
         // Disconnect from the gateway.
         await gateway.disconnect();
 
-        res.status(200).json({ response: 'Transaction has been submitted' });
+        res.redirect('/master_index');
 
     } catch (error) {
         console.error(`Failed to submit transaction: ${error}`);
@@ -1076,7 +1126,7 @@ var authUser = function (id, password, callback) {
 
 
 // server start
-app.listen(PORT, HOST);
+server.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
 connectDB();
 
