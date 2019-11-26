@@ -3,19 +3,42 @@
 
 <head>
   <title>메인페이지</title>
+  <style>
+    .wrapper {
+      display: grid;
+      /* grid-template-columns: 70% 30%; */
+      grid-column-gap: 1em;
+      grid-row-gap: 1em;
+    }
+
+    .wrapper>div {
+      background: #eee;
+      padding: 1em;
+    }
+
+    .wrapper>div:nth-child(odd) {
+      background: #ddd;
+    }
+  </style>
 </head>
 
 <body>
 
-  <h1>회원가입</h1>
-  <br>
-  <a href="./api/join">회원 가입</a>
+  <div class="wrapper">
+
+    <h1>회원가입</h1>
+    <br>
+    <a href="./api/join">회원 가입</a>
 
 
-  <h1>로그인</h1>
-  <br>
-  <a href="./api/login">로그인</a>
-  <br>
+    <h1>로그인</h1>
+    <br>
+    <a href="./api/login">로그인</a>
+    <br>
+
+  </div>
+
+
   <br><br><br>
 
 

@@ -8,7 +8,9 @@ var RegisterUser = require('./registerUser');
 var adminKey = 'admin1';
 var mongoose = require('mongoose');
 var crypto = require('crypto');
-var io = require('socket.io')(server);
+var io = require('socket.io')(server, {
+    pingTimeout: 3000,
+});
 
 // var User = require('./user');
 
@@ -130,6 +132,7 @@ app.get('/master_index', function (req, res) {
 
     });
 });
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 ////////////////////// 로그인
@@ -286,13 +289,11 @@ app.post('/api/join/', async function (req, res) {
 ////////////////////// 모든 원두 이력 조회
 /////////////////////////////////////////////////////////////////////////////////////
 
-app.get('//api/queryAllGoods', function (req, res) {
-    fs.readFile('./queryAllGoods.html', function (error, data) {
-        res.send(data.toString());
-
-    });
-});
-
+// app.get('//api/queryAllGoods', function (req, res) {
+//     fs.readFile('./queryAllGoods.html', function (error, data) {
+//         res.send(data.toString());
+//     });
+// });
 
 app.get('/api/queryAllGoods', async function (req, res) {
     // create the key value store as defined in the fabric-client/config/default.json 'key-value-store' setting
@@ -322,7 +323,7 @@ app.get('/api/queryAllGoods', async function (req, res) {
     const contract = network.getContract('sacc');
 
     const result = await contract.evaluateTransaction('getAllKeys');
-    console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
+    // console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
 
     var obj = JSON.parse(result);
     res.status(200).json(obj);
@@ -370,10 +371,9 @@ app.get('/api/querykey/:id', async function (req, res) {
 
 
         // Evaluate the specified transaction.
-        // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
         const result = await contract.evaluateTransaction('get', key);
 
-        console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
+        // console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
 
         var obj = JSON.parse(result)
         res.status(200).json(obj);
@@ -472,6 +472,9 @@ app.get('/api/sendGoods_importer', function (req, res) {
 app.post('/api/sendGoods_importer/', async function (req, res) {
     try {
 
+        console.log("key : ", key);
+        console.log("value17: ", value17);
+        console.log("destination1: ", destination1);
         var key = req.body.key;
         var value17 = req.body.value17;
         var destination1 = req.body.destination1;
@@ -537,13 +540,13 @@ app.post('/api/sendGoods_importer/', async function (req, res) {
 
 ////////////////////// 창고관리) 상품 이력 등록
 
-app.get('/api/enrollGoods_container', function (req, res) {
+app.get('/api1/enrollGoods_container', function (req, res) {
     fs.readFile('./container/enrollGoods_container.html', function (error, data) {
         res.send(data.toString());
     });
 });
 
-app.post('/api/enrollGoods_container/', async function (req, res) {
+app.post('/api1/enrollGoods_container/', async function (req, res) {
     try {
         var key = req.body.key;
         var value19 = req.body.value19;  // V20
@@ -604,14 +607,14 @@ app.post('/api/enrollGoods_container/', async function (req, res) {
 
 ////////////////////// 창고관리) 상품 출고 날짜 등록
 
-app.get('/api/sendGoods_container', function (req, res) {
+app.get('/api1/sendGoods_container', function (req, res) {
     fs.readFile('./container/sendGoods_container.html', function (error, data) {
         res.send(data.toString());
     });
 });
 //
 //
-app.post('/api/sendGoods_container/', async function (req, res) {
+app.post('/api1/sendGoods_container/', async function (req, res) {
     try {
         var key = req.body.key;
         var value22 = req.body.value22; // V23
@@ -674,13 +677,13 @@ app.post('/api/sendGoods_container/', async function (req, res) {
 // =================================================================================
 
 ////////////////////// 원두 로스팅 등록
-app.get('/api/enrollGoods_roaster', function (req, res) {
+app.get('/api2/enrollGoods_roaster', function (req, res) {
     fs.readFile('./roaster/enrollGoods_roaster.html', function (error, data) {
         res.send(data.toString());
     });
 });
 
-app.post('/api/enrollGoods_roaster/', async function (req, res) {
+app.post('/api2/enrollGoods_roaster/', async function (req, res) {
     try {
         var key = req.body.key;
 
@@ -753,16 +756,16 @@ app.post('/api/enrollGoods_roaster/', async function (req, res) {
 
 ////////////////////// 원두 도착 날짜 등록
 
-app.get('/api/enrollArriveTime_roaster', function (req, res) {
+app.get('/api2/enrollArriveTime_roaster', function (req, res) {
     fs.readFile('./roaster/enrollArriveTime_roaster.html', function (error, data) {
         res.send(data.toString());
     });
 });
 
-app.post('/api/enrollArriveTime_roaster/', async function (req, res) {
+app.post('/api2/enrollArriveTime_roaster/', async function (req, res) {
     try {
-        var key = req.body.key;
-        var value24 = req.body.value24;
+        var key = req.body.key.toString();
+        var value24 = req.body.value24.toString();
 
         // Create a new file system based wallet for managing identities.
         const walletPath = path.join(process.cwd(), '..', 'wallet');
@@ -818,16 +821,16 @@ app.post('/api/enrollArriveTime_roaster/', async function (req, res) {
 
 ////////////////////// 카페) 상품 출고 날짜 등록
 
-app.get('/api/sendGoods_roaster', function (req, res) {
+app.get('/api2/sendGoods_roaster', function (req, res) {
     fs.readFile('./roaster/sendGoods_roaster.html', function (error, data) {
         res.send(data.toString());
     });
 });
 // Create car handle
-app.post('/api/sendGoods_roaster/', async function (req, res) {
+app.post('/api2/sendGoods_roaster/', async function (req, res) {
     try {
-        var key = req.body.key;
-        var value38 = req.body.value38;
+        var key = req.body.key.toString();
+        var value38 = req.body.value38.toString();
         var destination3 = req.body.destination3;
 
         // Create a new file system based wallet for managing identities.
@@ -893,13 +896,13 @@ app.post('/api/sendGoods_roaster/', async function (req, res) {
 
 ////////////////////// 패키징 업체 ) 상품 도착 날짜 등록
 
-app.get('/api/enrollArriveTime_packaging', function (req, res) {
+app.get('/api3/enrollArriveTime_packaging', function (req, res) {
     fs.readFile('./master/enrollArriveTime_packaging.html', function (error, data) {
         res.send(data.toString());
     });
 });
 
-app.post('/api/enrollArriveTime_packaging/', async function (req, res) {
+app.post('/api3/enrollArriveTime_packaging/', async function (req, res) {
     try {
         var key = req.body.key;
         var value40 = req.body.value40;
@@ -960,13 +963,13 @@ app.post('/api/enrollArriveTime_packaging/', async function (req, res) {
 ////////////////////// 패키징 업체 ) 상품 패키징 날짜 등록
 
 
-app.get('/api/enrollGoods_packaging', function (req, res) {
+app.get('/api3/enrollGoods_packaging', function (req, res) {
     fs.readFile('./master/enrollGoods_packaging.html', function (error, data) {
         res.send(data.toString());
     });
 });
 // Create car handle
-app.post('/api/enrollGoods_packaging/', async function (req, res) {
+app.post('/api3/enrollGoods_packaging/', async function (req, res) {
     try {
         var key = req.body.key;
         var value42 = req.body.value42;
@@ -1004,6 +1007,7 @@ app.post('/api/enrollGoods_packaging/', async function (req, res) {
             var from = "패키징업체";
             var job = "패키징 시간 등록";
             sendData = { key, from, job, value42, blockNumber, transactionId, status };
+            console.log('Package_enroll_seed2 emit', sendData)
             io.emit('Package_enroll_seed2', sendData);
         })
         await contract.submitTransaction('set_timeByService', key, value42);
@@ -1024,13 +1028,13 @@ app.post('/api/enrollGoods_packaging/', async function (req, res) {
 
 ////////////////////// 패키징 업체 ) 상품 출고 날짜 등록
 
-app.get('/api/sendGoods_packaging', function (req, res) {
+app.get('/api3/sendGoods_packaging', function (req, res) {
     fs.readFile('./master/sendGoods_packaging.html', function (error, data) {
         res.send(data.toString());
     });
 });
 // Create car handle
-app.post('/api/sendGoods_packaging/', async function (req, res) {
+app.post('/api3/sendGoods_packaging/', async function (req, res) {
     try {
         var key = req.body.key;
         var value44 = req.body.value44;
@@ -1067,7 +1071,7 @@ app.post('/api/sendGoods_packaging/', async function (req, res) {
             console.log("--------------------------------")
             var from = "패키징업체";
             var job = "패키징 출고 시간 등록";
-            sendData = { key, from, job, value, blockNumber, transactionId, status };
+            sendData = { key, from, job, value44, blockNumber, transactionId, status };
             io.emit('Package_enroll_seed3', sendData);
         })
         await contract.submitTransaction('set_timeByService2', key, value44);

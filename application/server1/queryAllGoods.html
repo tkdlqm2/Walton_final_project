@@ -2,9 +2,10 @@
 <html>
 
 <head>
+    <title>수입 업자 페이지</title>
+
     <!-- jQuery AJAX -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
     <script>
         $(document).ready(function () {
             $("button").click(function () {
@@ -12,8 +13,9 @@
 
                     $("#div2").empty();
 
+                    console.log("data.length : ", data.length);
                     for (var i = 0; i < data.length; i++) {
-                        $("#div2").append(JSON.stringify(data[i]) + "<br>" + "<br>");
+                        $("#div2").append(JSON.stringify(data[i]) + "<br>" + "<br>" + "power");
                     }
 
 
@@ -21,7 +23,6 @@
             });
         });
     </script>
-    <title>수입 업자 페이지</title>
 </head>
 
 <body>

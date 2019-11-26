@@ -2,37 +2,84 @@
 <html>
 
 <head>
-    <title>CreateKey Page</title>
+    <div>
+        <title>수입 업자 페이지</title>
+    </div>
+    <style>
+        .wrapper {
+            display: grid;
+            grid-template-columns: 10% 60% 30%;
+            grid-column-gap: 1em;
+            grid-row-gap: 1em;
+        }
+
+        .wrapper>div {
+            background: #eee;
+            padding: 1em;
+        }
+
+        .wrapper>div:nth-child(odd) {
+            background: #ddd;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>유통 업체</h1>
-    <hr />
-    <form method="post">
-        <table>
-            <tr>
-                <td><label>원두ID</label></td>
-                <td><input type="text" name="key" /></td>
-            </tr>
-            <tr>
-                <td><label>날짜 등록</label></td>
-                <td><input type="text" name="value17" /></td>
-            </tr>
-            <tr>
-                <td><label>배송지 등록</label></td>
-                <td><input type="text" name="destination1" /></td>
-            </tr>
+    <h1>수입업자 페이지</h1>
+    <div class="wrapper">
 
-        </table>
-        <input type="submit" name="" />
-    </form>
-    <a href="/">로그아웃</a>
-    <div>
-        <div id="chatLogs"></div>
+        <div>
+            <p>메뉴</p>
+            <a href="./api/querykey">이력 관리</a>
+            <br>
+            <a href="./api/enrollGoods_improter">상품 등록</a>
+            <br>
+            <a href="./api/sendGoods_importer">상품 출고</a>
+            <br>
+            <br>
+            <a href="./api/queryAllGoods">원두 이력 확인</a>
+            <br>
+            <a href="#">마이 페이지</a>
+            <br>
+            <br>
+
+            <button>Query All Keys</button>
+
+            <br><br><br>
+            <a onclick="rmSession()">로그아웃</a>
+        </div>
+        <div>
+            <form method="post">
+                <table>
+                    <tr>
+                        <td><label>원두ID</label></td>
+                        <td><input type="text" name="key" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>날짜 등록</label></td>
+                        <td><input type="text" name="value17" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>배송지 등록</label></td>
+                        <td><input type="text" name="destination1" /></td>
+                    </tr>
+
+                </table>
+                <input type="submit" name="" />
+            </form>
+        </div>
+        <div>
+            <div id="chatLogs"></div>
+        </div>
     </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        rmSession = function () {
+            sessionStorage.clear();
+            location.href = "/"
+        }
         $(function () {
             // socket.io 서버에 접속한다
             var socket = io();

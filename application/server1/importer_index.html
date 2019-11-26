@@ -2,40 +2,101 @@
 <html>
 
 <head>
+    <style tyle="text/css">
+        #header {
+            height: 90px;
+            background: #ccc;
+        }
+
+        #footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 70px;
+            background: #ccc;
+        }
+    </style>
     <!-- jQuery AJAX -->
     <title>수입 업자 페이지</title>
+    <style>
+        .wrapper {
+            display: grid;
+            grid-template-columns: 20% 50% 30%;
+            grid-column-gap: 1em;
+            grid-row-gap: 1em;
+        }
+
+        .wrapper>div {
+            background: #eee;
+            padding: 1em;
+        }
+
+        .wrapper>div:nth-child(odd) {
+            background: #ddd;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("button").click(function () {
+                $.get("../../api/query", function (data, status) {
+
+                    $("#div2").empty();
+
+                    console.log("data.length : ", data.length);
+                    for (var i = 0; i < data.length; i++) {
+                        $("#div2").append(JSON.stringify(data[i]) + "<br>" + "<br>");
+                    }
+
+
+                });
+            });
+        });
+    </script>
 </head>
 
 <body>
+    <br>
+    <div id="header">수입업자페이지</div>
+    <div class="wrapper">
 
+        <div>
+            <p>메뉴</p>
+            <a href="./api/querykey">이력 관리</a>
+            <br>
+            <a href="./api/enrollGoods_improter">상품 등록</a>
+            <br>
+            <a href="./api/sendGoods_importer">상품 출고</a>
+            <br>
+            <br>
+            <a href="./api/queryAllGoods">원두 이력 확인</a>
+            <br>
+            <a href="#">마이 페이지</a>
+            <br>
+            <br>
 
-    <br>
-    <h1>수입업자 페이지</h1>
-    <p>메뉴</p>
-    <a href="./api/querykey">이력 관리</a>
-    <br>
-    <a href="./api/enrollGoods_improter">상품 등록</a>
-    <br>
-    <a href="./api/sendGoods_importer">상품 출고</a>
-    <br>
-    <br>
-    <a href="./api/queryAllGoods">원두 이력 확인</a>
-    <br>
-    <a href="#">마이 페이지</a>
-    <br>
-    <br>
+            <button>Query All Keys</button>
 
-    <button>Query All Keys</button>
-
-    <br><br><br>
-    <a href="/">로그아웃</a>
-
-    <div>
-        <div id="chatLogs"></div>
+            <br><br><br>
+            <a onclick="rmSession()">로그아웃</a>
+        </div>
+        <div id="div2"></div>
+        <div>
+            <div id="chatLogs"></div>
+        </div>
     </div>
+
+    <div id="footer">Footer</div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+
     <script>
+        rmSession = function () {
+            sessionStorage.clear();
+            location.href = "/"
+        }
+
         $(function () {
             // socket.io 서버에 접속한다
             var socket = io();
@@ -217,14 +278,16 @@
 
             domain = JSON.parse(sessionStorage.getItem("domain"));
 
-            for (var i = 0; i < domain.length; i++) {
+            for (var i = domain.length - 1; i >= 0; i--) {
                 $("#chatLogs").append("-------------------" + domain[i].from + "   " + domain[i].job + "-------------------" + "</strong></div><br>")
                     .append("원두ID : " + domain[i].key + "</strong></div><br>")
                     .append("BlockNumber : " + domain[i].blockNumber + "</strong></div><br>")
                     .append("TransaciontID : " + domain[i].transactionId + "</strong></div><br>")
                     .append("status : " + domain[i].status + "</strong></div><br><br>");
             }
+
         });
+
     </script>
 
 
