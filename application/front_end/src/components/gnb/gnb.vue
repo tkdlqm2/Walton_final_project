@@ -3,7 +3,7 @@
 
       <template slot="brand">
         <b-navbar-item tag="router-link" :to="{ path: '/' }">
-          <img src="https://postfiles.pstatic.net/MjAxOTExMjZfMjUw/MDAxNTc0NzUyMzUxMDU4.2yg4k7urG-FQFbtvwUidofJzcNONR8K1K1CUPhjb_14g.wasnsj7rUVahpSo4Pwp2hKrjTn_92e48pQiutAYSk_0g.PNG.tkdlqm2/KakaoTalk_Photo_2019-11-26-16-10-27.png?type=w773">
+          <img src="https://postfiles.pstatic.net/MjAxOTExMjZfMzgg/MDAxNTc0NzU1MjQxMDE2.zW5aq8nlHGvKc2fj8uP7ztQvf-UPbdH2JRZS_1GtYikg.Sf0QdJrrtyETK-tjROCl_rnVP5u1j14d--0wAwLtH-Qg.PNG.tkdlqm2/logo.png?type=w773">
         </b-navbar-item>
       </template>
 
