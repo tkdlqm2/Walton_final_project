@@ -53,3 +53,7 @@ Version 2 complements the inefficient configuration in version 1 by reducing the
 * Show tracking datas about seeds<br>
 
 ![version4](./images/tracking.png) <br><br>
+
+# contact
+
+For questions or recommendations don't hesitate to contact tkdlqm2@naver.com justwaves@naver.com
