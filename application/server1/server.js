@@ -323,7 +323,7 @@ app.get('/api/queryAllGoods', async function (req, res) {
     const contract = network.getContract('sacc');
 
     const result = await contract.evaluateTransaction('getAllKeys');
-    // console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
+    console.log(`원두 이력 조회 : ${result.toString()}`);
 
     var obj = JSON.parse(result);
     res.status(200).json(obj);
