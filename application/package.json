@@ -11,7 +11,7 @@
         "express": "^4.13.4",
         "fabric-ca-client": "^1.4.1",
         "fabric-network": "^1.4.1",
-        "mongoose": "^5.7.4",
+        "mongoose": "^5.7.5",
         "socket.io": "^2.3.0"
     },
     "author": "",
